@@ -1,0 +1,31 @@
+# Compiler
+CC = gcc
+
+# Compiler flags
+CFLAGS = -Wall -Wextra -pthread
+
+# Target executable
+TARGET = tid_manager
+
+# Source and header files directory
+SRC_DIR = .
+
+# Source files
+SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
+
+# Include files directory
+INC_DIR = .
+
+# Include files
+INC_FILES = $(wildcard $(INC_DIR)/*.h)
+
+# Default target
+all: $(TARGET)
+
+# Link object files to create the executable
+$(TARGET): $(SRC_FILES) $(INC_FILES)
+	$(CC) $(CFLAGS) -I$(INC_DIR) -o $(TARGET) $(SRC_FILES)
+
+# Clean up build files
+clean:
+	rm -f $(TARGET)
