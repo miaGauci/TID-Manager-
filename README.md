@@ -1,21 +1,23 @@
 # TID Manager Project
 ## Overview
-This project implements a Thread ID (TID) Manager that manages thread identifiers in a multithreaded environment. The system allocates and releases TIDs in a thread-safe manner using mutexes for synchronization. It also includes a simulation where multiple threads request TIDs, perform tasks, and release the TIDs after completing their work.
+This project implements a Thread ID (TID) Manager that manages thread identifiers in a multithreaded environment. The system allocates and releases TIDs in a thread-safe manner using mutexes for synchronization. It also includes a simulation where multiple threads request TIDs, perform tasks and release the TIDs after completing their work.
 
-Code Explanation
-1. TIDManager Structure
+### Code Explanation
+
 The TIDManager structure holds:
 
-A bitmap for tracking available TIDs, where each bit represents one TID.
-A mutex to ensure synchronization between threads when accessing or modifying the bitmap.
-2. Main Functions
-1. allocate_map()
-This function initializes the TID manager:
+- A bitmap for tracking available TIDs, where each bit represents one TID.
+- A mutex to ensure synchronization between threads when accessing or modifying the bitmap.
 
-It sets up a mutex to ensure thread-safe operations.
+## 2. Main Functions
+
+### 1. allocate_map()
+
+This function initializes the TID manager by setting up a mutex to ensure thread-safe operations.
 It initializes the bitmap where all TIDs above a certain threshold (MIN_TID) are marked as available.
-c
-Copy code
+
+```c
+
 int allocate_map() {
     printf("Initializing mutex...\n");
     if (pthread_mutex_init(&tid_manager.mutex, NULL) != 0) {
@@ -37,14 +39,17 @@ int allocate_map() {
     return 1;
 }
 
-### 2. allocate_tid()
-This function attempts to allocate a TID:
+```
 
-It locks the mutex to prevent other threads from interfering while it checks for an available TID.
-It uses bitwise operations to find the first free TID and marks it as unavailable.
-It unlocks the mutex after successfully allocating the TID.
-c
-Copy code
+### 2. allocate_tid()
+
+This function attempts to allocate a TID by 
+- locking the mutex to prevent other threads from interfering while it checks for an available TID.
+- using bitwise operations to find the first free TID and mark it as unavailable.
+- unlocking the mutex after successfully allocating the TID.
+
+```c
+
 int allocate_tid() {
     pthread_t kernel_thread_id = pthread_self();
     while (pthread_mutex_trylock(&tid_manager.mutex) != 0) {
@@ -70,13 +75,18 @@ int allocate_tid() {
     printf("No available TIDs\n");
     return -1;
 }
-### 3. release_tid(int tid)
-This function releases a TID:
 
-It locks the mutex, marks the specified TID as available, and unlocks the mutex afterward.
-It checks that the TID is within a valid range before releasing it.
-c
-Copy code
+```
+
+### 3. release_tid(int tid)
+
+This function releases a TID by; 
+
+- locking the mutex, marking the specified TID as available, and unlocking the mutex afterwards.
+- checking that the TID is within a valid range before releasing it.
+
+```c
+
 void release_tid(int tid) {
     pthread_t kernel_thread_id = pthread_self();
     while (pthread_mutex_trylock(&tid_manager.mutex) != 0) {
@@ -99,14 +109,18 @@ void release_tid(int tid) {
     printf("Released TID: %d\n", tid);
 }
 
+```
+
 ### 3. Thread Function
+
 Each thread:
 
-Requests a TID using allocate_tid().
-Sleeps for a random period between specified minimum and maximum times.
-Releases the TID using release_tid().
-c
-Copy code
+- Requests a TID using allocate_tid().
+- Sleeps for a random period between specified minimum and maximum times.
+- Releases the TID using release_tid().
+
+```c
+
 void *thread_function(void *arg) {
     int *sleep_times = (int *)arg;
     int min_sleep = sleep_times[0];
@@ -132,9 +146,11 @@ void *thread_function(void *arg) {
 
     return NULL;
 }
-How to Run
+
+```
+### How to Run
 To run the program with 5 threads and a random sleep time between 2 and 5 seconds:
 
-bash
-Copy code
+```bash
 ./tid_manager -n 5 -l 2 -h 5
+```
