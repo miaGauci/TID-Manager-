@@ -36,7 +36,8 @@ int allocate_map() {
 
     return 1;
 }
-2. allocate_tid()
+
+### 2. allocate_tid()
 This function attempts to allocate a TID:
 
 It locks the mutex to prevent other threads from interfering while it checks for an available TID.
@@ -69,7 +70,7 @@ int allocate_tid() {
     printf("No available TIDs\n");
     return -1;
 }
-3. release_tid(int tid)
+### 3. release_tid(int tid)
 This function releases a TID:
 
 It locks the mutex, marks the specified TID as available, and unlocks the mutex afterward.
@@ -97,7 +98,8 @@ void release_tid(int tid) {
     pthread_mutex_unlock(&tid_manager.mutex);
     printf("Released TID: %d\n", tid);
 }
-3. Thread Function
+
+### 3. Thread Function
 Each thread:
 
 Requests a TID using allocate_tid().
